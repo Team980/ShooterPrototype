@@ -36,20 +36,12 @@ public class Robot extends TimedRobot {
 
   public static final double ENCODER_DISTANCE_PER_TICK = 2 * Math.PI * (6.0/12) / 2048;
 
-  private RobotContainer m_robotContainer;
+  double targetSpeed = 18.0;//this changes based on distance to the goal
+
+  private RobotContainer m_robotContainer;//??
   
-  public Spark spark1;
-  public Spark spark2;
-
-  public Encoder encoder;
-
   public NetworkTable table;
 
-  public PIDController controller;
-
-  public SpeedControllerGroup group;
-
-  public XboxController stick;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -59,27 +51,11 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer();//??
   
-    spark1 = new Spark(3);
-    spark2 = new Spark(2);
-
-    stick = new XboxController(0);
 
     
-    SpinSparks spinSparks = new SpinSparks(spark1,  spark2);
-
-    encoder = new Encoder(0, 1);
-    encoder.setReverseDirection(true);
-    encoder.setDistancePerPulse(ENCODER_DISTANCE_PER_TICK);
-
-    encoder.setPIDSourceType(PIDSourceType.kRate);
-
-     group = new SpeedControllerGroup(spark1, spark2);
-
-    controller = new PIDController(.5, 0, 0, encoder, group);
-    controller.setPIDSourceType(PIDSourceType.kRate);
-
+   // SpinSparks spinSparks = new SpinSparks(spark1,  spark2);
 
     table = NetworkTableInstance.getDefault().getTable("debug");
 
@@ -98,9 +74,11 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
 
-    table.getEntry("encoder speed").setNumber(encoder.getRate());
+    CommandScheduler.getInstance().run();//run robot
+
+    table.getEntry("target speed").setNumber(targetSpeed);//theoretical data
+
   }
 
   /**
@@ -108,7 +86,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    controller.disable();
+
+    m_robotContainer.shooterCommand.cancel();
+
   }
 
   @Override
@@ -145,7 +125,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    //controller.enable();
+    m_robotContainer.shooterCommand.schedule();;
   }
 
   /**
@@ -153,10 +133,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-
-    group.set(-stick.getY(Hand.kLeft));
+    //group.set(-stick.getY(Hand.kLeft));
     //controller.setSetpoint(-30* stick.getY(Hand.kLeft));
-
   }
 
   @Override

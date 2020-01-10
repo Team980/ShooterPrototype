@@ -16,4 +16,7 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    
+  public static final double ENCODER_DISTANCE_PER_TICK = 2 * Math.PI * (6.0/12) / 2048;
+  
 }

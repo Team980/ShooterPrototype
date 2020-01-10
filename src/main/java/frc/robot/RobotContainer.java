@@ -9,7 +9,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.NameItWhatever;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.PidShooter;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -23,6 +25,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
 
+  public Command shooterCommand;
 
 
   /**
@@ -31,6 +34,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    PidShooter pidShooter = new PidShooter();
+
+    XboxController xboxController = new XboxController(0);
+
+    shooterCommand = new NameItWhatever(pidShooter, xboxController);
   }
 
   /**
