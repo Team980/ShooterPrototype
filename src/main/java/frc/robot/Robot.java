@@ -159,7 +159,7 @@ public class Robot extends TimedRobot {
     }
     table.getEntry("encoder speed").setNumber(encoder.getRate());
 
-    //controller.enable();
+    controller.enable();
   }
 
   /**
@@ -170,7 +170,7 @@ public class Robot extends TimedRobot {
 
     //group.set(-stick.getY(Hand.kLeft));
     //controller.setSetpoint(-40* stick.getY(Hand.kLeft));
-    controller.setSetpoint(18);
+    controller.setSetpoint(20);
   }
 
   @Override
