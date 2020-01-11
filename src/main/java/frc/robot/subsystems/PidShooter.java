@@ -27,15 +27,11 @@ public class PidShooter extends PIDSubsystem {
    * Creates a new PidShooter.
    */
   public PidShooter() {
-
-    super(new PIDController(0.3, 0, 0));
+    super(new PIDController(0.005, 0, 0));
     
-
-    Spark spark1 = new Spark(3);
-    Spark spark2 = new Spark(2);
-    group = new SpeedControllerGroup(spark1, spark2);
-
+    group = new SpeedControllerGroup(new Spark(2), new Spark(3));
     encoder = new Encoder(0, 1);
+
 
     encoder.setReverseDirection(true);
     encoder.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_TICK);//probobly in ft/sec
@@ -44,8 +40,8 @@ public class PidShooter extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    group.pidWrite(output);
-    System.out.println("target:"+output + "setpoint:"+setpoint);
+    group.set(output);
+    System.out.println("target:"+output + " setpoint:"+setpoint);
   }
 
   @Override
