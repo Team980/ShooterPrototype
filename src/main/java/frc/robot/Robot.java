@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import java.sql.Time;
+import java.util.Timer;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Encoder;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.SpinSparks;
+import frc.robot.Constants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -34,7 +38,7 @@ import frc.robot.commands.SpinSparks;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  public static final double ENCODER_DISTANCE_PER_TICK = 2 * Math.PI * (6.0/12) / 2048;
+  public static final double ENCODER_DISTANCE_PER_TICK = 2 * Math.PI * Constants.SHOOTER_WHEEL_RADIUS_FEET / 2048;
 
   private RobotContainer m_robotContainer;
   
@@ -50,6 +54,8 @@ public class Robot extends TimedRobot {
   public SpeedControllerGroup group;
 
   public XboxController stick;
+
+  int counter = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -77,12 +83,13 @@ public class Robot extends TimedRobot {
 
      group = new SpeedControllerGroup(spark1, spark2);
 
-    controller = new PIDController(.5, 0, 0, encoder, group);
+    controller = new PIDController(.01, 0, 0.03, encoder, group);
+    //controller.setF(0.005);
+
+    //controller = new PIDController(.5, 0, 0, encoder, group);
     controller.setPIDSourceType(PIDSourceType.kRate);
 
-
     table = NetworkTableInstance.getDefault().getTable("debug");
-
   }
 
   /**
@@ -100,7 +107,13 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    table.getEntry("encoder speed").setNumber(encoder.getRate());
+
+    double speedRpm = 60.0 * encoder.getRate() / (2*Math.PI*Constants.SHOOTER_WHEEL_RADIUS_FEET);
+
+    table.getEntry("shooter rpm").setNumber(speedRpm);
+    table.getEntry("shooter fps").setNumber(encoder.getRate());
+
+    table.getEntry("test counter").setNumber(counter++);
   }
 
   /**
@@ -144,6 +157,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    table.getEntry("encoder speed").setNumber(encoder.getRate());
 
     //controller.enable();
   }
@@ -154,9 +168,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    group.set(-stick.getY(Hand.kLeft));
-    //controller.setSetpoint(-30* stick.getY(Hand.kLeft));
-
+    //group.set(-stick.getY(Hand.kLeft));
+    //controller.setSetpoint(-40* stick.getY(Hand.kLeft));
+    controller.setSetpoint(18);
   }
 
   @Override
