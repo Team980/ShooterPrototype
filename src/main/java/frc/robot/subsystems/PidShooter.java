@@ -28,7 +28,8 @@ public class PidShooter extends PIDSubsystem {
    */
   public PidShooter() {
 
-    super(new PIDController(0.0069, 0, 0));
+    super(new PIDController(0.3, 0, 0));
+    
 
     Spark spark1 = new Spark(3);
     Spark spark2 = new Spark(2);
@@ -44,12 +45,13 @@ public class PidShooter extends PIDSubsystem {
   public void useOutput(double output, double setpoint) {
     // Use the output here
     group.pidWrite(output);
-    
+    System.out.println("target:"+output + "setpoint:"+setpoint);
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
+    System.out.println("encoder: "+encoder.getRate());
     return encoder.getRate();
   }
 }

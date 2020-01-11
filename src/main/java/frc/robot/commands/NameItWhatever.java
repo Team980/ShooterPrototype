@@ -36,8 +36,9 @@ public class NameItWhatever extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pidShooter.setSetpoint(-40*xboxController.getY(Hand.kLeft));
-
+    pidShooter.setSetpoint(18);
+    //pidShooter.setSetpoint(-40*xboxController.getY(Hand.kLeft));
+    //System.out.println(-40*xboxController.getY(Hand.kLeft));
   }
 
   // Called once the command ends or is interrupted.
